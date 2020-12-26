@@ -33,7 +33,6 @@
   ```
 
 
-
 #### npm安装以下软件包：
 
 * pm2
@@ -80,14 +79,21 @@ cp matsuri_translation/Matsuri_translation/celeryconfig_example.py matsuri_trans
 pip3 install pipenv
 cd matsuri_translation
 python3 -m pipenv run pip install -r requirements.txt
-python3 -m pipenv run pip install gunicorn
-python3 -m pipenv run pip install pypng
-python3 -m pipenv run pip install pngquant
 ```
 
 如果执行pip3遇到`ImportError: cannot import name main`的错误，请在root下执行`hash -r`刷新一下
 
-> 按说应该把gunicorn放进requirements.txt里吧
+#### Launch Redis server
+
+```bash
+systemctl start redis.service
+```
+
+If your're in an environment without systemd:
+
+```bash
+nohup redis-server [redis.conf] 2>&1 &
+```
 
 #### 启动主程序
 
@@ -111,7 +117,7 @@ pm2 save
 将前端连接到网站目录
 
 ```bash
-ln -s ~ubuntu/matsuri_translation/Matsuri_translation/frontend /var/www
+ln -s ${HOME}/matsuri_translation/Matsuri_translation/frontend /var/www
 a2enmod proxy_http
 service apache2 restart
 ```
@@ -148,7 +154,7 @@ service apache2 reload
 ```nginx
 server {
     listen 80;
-    server_name example.com;
+    server_name _;
     location ^~ /api/ {
         proxy_pass http://127.0.0.1:8082;
         proxy_redirect off;
@@ -157,7 +163,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
     location / {
-        root /home/ubuntu/matsuri_translation/Matsuri_translation/frontend;
+        root /path/to/matsuri_translation/Matsuri_translation/frontend;
         index index.html;
     }
 }

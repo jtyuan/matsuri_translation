@@ -410,8 +410,8 @@ $(function () {
         submit_task(true);
     });
     if (localStorage.getItem("translatetemp") == null) localStorage.setItem("translatetemp", '<div style="margin:10px 38px">\n' +
-        '<img src="img/gongfang_official.png" height="38">\n' +
-        '<div style="font-size:27px;">{T}</div>\n' +
+        '<img src="img/nana_text.png" height="34">\n' +
+        '<div style="font-size:20px;font-family: source-han-sans-simplified-c, sans-serif;font-weight: 400;font-style: normal;">{T}</div>\n' +
         '</div>')
     $("#translatetemp").val(localStorage.getItem("translatetemp"));
     $("#translatetemp").keyup(refresh_trans_div);

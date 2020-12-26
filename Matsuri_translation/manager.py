@@ -51,16 +51,18 @@ def insert_text_chunk(src_png, dst_png, text):
 
 @celery.task(time_limit=300, soft_time_limit=240, bind=True)
 def execute_event(self, event):
-    # logger.info(execute_event.name)
-    # logger.info(self.request)
-    # logger.info(current_process().index)
+    logger.info(execute_event.name)
+    logger.info(self.request)
+    logger.info(current_process().index)
     chrome_options = Options()
     chrome_options.add_argument("--headless")
+    chrome_options.add_argument('--disable-dev-shm-usage')
     if (chrome_twitter_port != None):
+        logger.info('chrome_twitter_port ' + str(chrome_twitter_port))
         chrome_options.add_experimental_option("debuggerAddress",
                                                "127.0.0.1:" + str(chrome_twitter_port[current_process().index]))
     # chrome_options.add_argument("--user-data-dir=/tmp/chromium-user-dir")
-    # chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--no-sandbox")
     # WIDTH = 640  # 宽度
     # HEIGHT = 4000  # 高度
     # PIXEL_RATIO = 1.0  # 分辨率
@@ -70,19 +72,26 @@ def execute_event(self, event):
     # chrome_options.add_argument(
     #     "--user-agent=Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) Waterfox/56.2")
     # chrome_options.add_argument("--proxy-server=127.0.0.1:12333")
-    driver = webdriver.Chrome(options=chrome_options)
+    logger.info('before driver')
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+    except Exception as e:
+        import traceback
+        logger.error(e)
+        traceback.print_exc()
+        raise e
     filename = 'success|[]'
 
-    #logger.info("tweet.execute_event.chrome_started")
+    logger.info("tweet.execute_event.chrome_started")
     try:
         processor = TweetProcess(driver)
         processor.open_page(event['url'])
-        #logger.info("tweet.execute_event.page_opened")
+        logger.info("tweet.execute_event.page_opened")
         processor.modify_tweet()
-        # logger.info("tweet.execute_event.js_executed")
+        logger.info("tweet.execute_event.js_executed")
         # processor.scroll_page_to_tweet(event['fast'])
         filename = processor.save_screenshots(event['fast'])
-        #logger.info("tweet.execute_event.png_get")
+        logger.info("tweet.execute_event.png_get")
     except:
         # driver.save_screenshot(f'Matsuri_translation/frontend/cache/LastError.png')
         driver.quit()
