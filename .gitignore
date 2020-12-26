@@ -105,3 +105,6 @@ venv.bak/
 Matsuri_translation/frontend/cache/
 celeryconfig.py
 .idea/
+
+dump.rdb
+nohup.out
