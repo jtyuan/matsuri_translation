@@ -162,8 +162,9 @@ function show_translate(data) {
             articleToIndex[tweetpos[i].articleId] = [];
         }
         articleToIndex[tweetpos[i].articleId].push(i);
-        templatechosen.push("");
+        templatechosen.push('');
         let str = tweetpos[i].text || "";
+        let rows = (str.match(/\n/g) || []).length + 2;  // default rows of the translation textarea
         str = str.replace(/\n/g, "<br>");
         str = str.replace(/  /g, "&nbsp; ");
         $("#translatetbody").append("<tr id=\'translatetr" + i + "\'>\n" +
@@ -172,7 +173,7 @@ function show_translate(data) {
             "</th>\n" +
             "      <td class=\'originaltext\'>" + str + "</td>\n" +
             "    <td><div class=\'translatetd\' id=\'translatetd" + i + "\' " + (i > 0 ? "style='display:none'" : "") + " ><div class=\'input-group\'>" +
-            "<textarea id=\'transtxt" + i + "\' class=\'form-control\' " + (i == 0 ? "style='height:100px'" : "") + "></textarea></div>\n" +
+            "<textarea id=\'transtxt" + i + "\' class=\'form-control\' " + (i == 0 ? "style='height:100px'" : "") + " rows=\'" + rows + "\'></textarea></div>\n" +
             "      <div class=\"dropdown templatedropdown\">\n" +
             "  <button class=\"btn btn-outline-secondary w-100 dropdown-toggle\" type=\"button\" id=\"dropdownMenu" + i + "\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n    模板选择\n  </button>\n  <div class=\"dropdown-menu dropdownmenuitems\" aria-labelledby=\"dropdownMenu" + i + "\" id=\"dropdownmenuitems" + i + "\">\n  </div>\n</div>\n      " +
             "</div></td>\n" +
