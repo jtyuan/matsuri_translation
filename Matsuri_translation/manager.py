@@ -26,9 +26,6 @@ except:
     chrome_twitter_port = None
     chrome_auto_port = None
 
-# self_url=getattr(celeryconfig,'self_url',None)
-# chrome_twitter_port=getattr(celeryconfig,'chrome_twitter_port',None)
-# chrome_auto_port=getattr(celeryconfig,'chrome_auto_port',None)
 
 celery = Celery('api')
 celery.config_from_object('Matsuri_translation.celeryconfig')
@@ -36,12 +33,12 @@ celery.config_from_object('Matsuri_translation.celeryconfig')
 
 def insert_text_chunk(src_png, dst_png, text):
     reader = png.Reader(filename=src_png)
-    chunks = reader.chunks()  # ´´½¨Ò»¸öÃ¿´Î·µ»ØÒ»¸öchunkµÄÉú³ÉÆ÷
-    chunk_list = list(chunks)  # °ÑÉú³ÉÆ÷µÄËùÓĞÔªËØ±ä³Élist
+    chunks = reader.chunks()  # åˆ›å»ºä¸€ä¸ªæ¯æ¬¡è¿”å›ä¸€ä¸ªchunkçš„ç”Ÿæˆå™¨
+    chunk_list = list(chunks)  # æŠŠç”Ÿæˆå™¨çš„æ‰€æœ‰å…ƒç´ å˜æˆlist
     # print(f"target png total chunks number is {len(chunk_list)}")
     chunk_item = tuple([b'tEXt', text])
 
-    # µÚÒ»¸öchunkÊÇ¹Ì¶¨µÄIHDR£¬ÎÒÃÇ°ÑtEXt·ÅÔÚµÚ2¸öchunk
+    # ç¬¬ä¸€ä¸ªchunkæ˜¯å›ºå®šçš„IHDRï¼Œæˆ‘ä»¬æŠŠtEXtæ”¾åœ¨ç¬¬2ä¸ªchunk
     index = 1
     chunk_list.insert(index, chunk_item)
 
@@ -61,18 +58,7 @@ def execute_event(self, event):
         logger.info('chrome_twitter_port ' + str(chrome_twitter_port))
         chrome_options.add_experimental_option("debuggerAddress",
                                                "127.0.0.1:" + str(chrome_twitter_port[current_process().index]))
-    # chrome_options.add_argument("--user-data-dir=/tmp/chromium-user-dir")
     chrome_options.add_argument("--no-sandbox")
-    # WIDTH = 640  # ¿í¶È
-    # HEIGHT = 4000  # ¸ß¶È
-    # PIXEL_RATIO = 1.0  # ·Ö±æÂÊ
-    #
-    # mobileEmulation = {"deviceMetrics": {"width": WIDTH, "height": HEIGHT, "pixelRatio": PIXEL_RATIO}}
-    # chrome_options.add_experimental_option('mobileEmulation', mobileEmulation)
-    # chrome_options.add_argument(
-    #     "--user-agent=Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) Waterfox/56.2")
-    # chrome_options.add_argument("--proxy-server=127.0.0.1:12333")
-    logger.info('before driver')
     try:
         driver = webdriver.Chrome(options=chrome_options)
     except Exception as e:
@@ -93,13 +79,10 @@ def execute_event(self, event):
         filename = processor.save_screenshots(event['fast'])
         logger.info("tweet.execute_event.png_get")
     except:
-        # driver.save_screenshot(f'Matsuri_translation/frontend/cache/LastError.png')
-        driver.quit()
         return 'LastError|[]'
     finally:
-        #     # time.sleep(5)
         driver.quit()
-    #
+
     return filename
 
 
@@ -114,7 +97,7 @@ def execute_event_auto(self, event):
         chrome_options.add_experimental_option("debuggerAddress",
                                                "127.0.0.1:" + str(chrome_auto_port[current_process().index]))
 
-    # Ôö¼ÓUAÒÔ´¥·¢Google Analytics
+    # å¢åŠ UAä»¥è§¦å‘Google Analytics
     # chrome_options.add_argument("--proxy-server=127.0.0.1:12333")
     driver_frontend = webdriver.Chrome(options=chrome_options)
     try:
