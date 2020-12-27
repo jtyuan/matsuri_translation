@@ -1,7 +1,7 @@
 //twemoji.base = "https://raw.githubusercontent.com/twitter/twemoji/master/assets/";
-var url;
-var saveUrlUser = false;
-var isSubmittedFast;
+let url;
+let saveUrlUser = false;
+let isSubmittedFast;
 function submit_task(isFast) {
     performanceData.beforeSubmitTask = new Date().getTime();
     isSubmittedFast = isFast;
@@ -10,7 +10,7 @@ function submit_task(isFast) {
     url = url.replace("mobile.twitter.com", "twitter.com");
     url = url.replace(/\?.*/, "");
     $("#url").val(url);
-    //var translation = $('#translation').val().replace(/\r\n|\r|\n/g, '\\r');
+    //let translation = $('#translation').val().replace(/\r\n|\r|\n/g, '\\r');
     $('#progress').val("开始获取图像");
     $("#autoprogress").text("开始获取图像");
     $('#url').css("display", "none");
@@ -20,7 +20,7 @@ function submit_task(isFast) {
     $("#translatetbody").html("");
     $("#screenshots").html("        <div id=\"screenshotclip0\" class=\"screenshotclip\"\n" +
         "             style=\"height: 800px;background-image: url('img/twittersample.jpg')\"></div>");
-    var jqxhr = $.ajax({
+    let jqxhr = $.ajax({
         url: "/api/tasks",
         type: "post",
         data: JSON.stringify({
@@ -36,39 +36,30 @@ function submit_task(isFast) {
 
 function fetch_img(task_id) {
     performanceData.beforeFetchImg = new Date().getTime();
-    var count = 0;
-    var locked = false;
-    var event = setInterval(function () {
+    let count = 0;
+    let locked = false;
+    let event = setInterval(function () {
         if (locked) return;
         locked = true;
         count += 1;
 
-        var jqxhr = $.ajax({
+        let jqxhr = $.ajax({
             url: '/api/get_task=' + task_id,
             success: function (data, status, xhr) {
                 locked = false;
                 if (data.state === "SUCCESS") {
                     performanceData.getTaskSucccess = new Date().getTime();
-                    var filename = data.result.substr(0, data.result.indexOf("|"));
-                    var clipinfo = data.result.substr(data.result.indexOf("|") + 1);
+                    let filename = data.result.substr(0, data.result.indexOf("|"));
+                    let clipinfo = data.result.substr(data.result.indexOf("|") + 1);
                     clipinfo = JSON.parse(clipinfo);
-                    console.log(clipinfo);
-                    if (isSubmittedFast && clipinfo[0] && clipinfo[0]["path"] && !url.endsWith(clipinfo[0]["path"])) {
-                        submit_task(false);
-                        $('#progress').val("可能为回复推文地址，正在请求完整图像");
-                        $("#autoprogress").text("可能为回复推文地址，正在请求完整图像");
-                        clearInterval(event);
-                        return;
-                    }
                     show_translate(clipinfo);
                     refresh_trans_div();
 
 
-                    var xhr = new XMLHttpRequest();
+                    let xhr = new XMLHttpRequest();
                     xhr.open('GET', 'cache/' + filename + '.png');
                     xhr.onprogress = function (event) {
                         if (event.lengthComputable) {
-                            //console.log((event.loaded / event.total) * 100); // 进度
                             $('#progress').val("正在下载图片 (" + Math.round((event.loaded / event.total) * 100) + "%)");
 
                             $("#autoprogress").text("正在下载图片 (" + Math.round((event.loaded / event.total) * 100) + "%)");
@@ -89,25 +80,36 @@ function fetch_img(task_id) {
                         $('#button-submit').removeAttr("disabled");
                         $('#button-submit-fast').removeAttr("disabled");
                         clip_screenshot();
-                        var translateTarget = 0;
-                        for (var i = 0; i < clipinfo.length; i++) if (url.endsWith(clipinfo[i]["path"]) || clipinfo[i].textSize === "23") {
-                            translateTarget = i;
-                            break;
+                        let translateTarget = 0;
+                        for (let i = 0; i < clipinfo.length; i++) {
+                            if (clipinfo[i].textSize === 23) {
+                                translateTarget = clipinfo[i].articleId;
+                                break;
+                            }
                         }
-                        for (var i = 1; i <= translateTarget; i++)
-                            if (!$("#show" + i).is(':checked')) $("#show" + i).click();
+                        let i = 0;
+                        for (let i = 0; i < clipinfo.length && clipinfo[i].articleId <= translateTarget; ++i) {
+                            if (!$("#show" + i).is(':checked')) {
+                                $("#show" + i).prop('checked', true).change();
+                            }
+                        }
                         if (defaultTranslate != null) {
-                            var multiTranslateIndex = defaultTranslate.trim().match(/^##[0-9]+$/gm);
+                            let multiTranslateIndex = defaultTranslate.trim().match(/^##[0-9]+$/gm);
                             if (multiTranslateIndex != null) {
                                 multiTranslateIndex = multiTranslateIndex.map(s => +s.substr(2) - 1);
-                                var multiTranslation = defaultTranslate.trim().split(/\n?^##[0-9]+$\n?/gm).slice(1);
-                                for (var i = 0; i < multiTranslateIndex.length; i++) {
-                                    if (!$("#show" + multiTranslateIndex[i]).is(':checked')) $("#show" + i).click();
+                                let multiTranslation = defaultTranslate.trim().split(/\n?^##[0-9]+$\n?/gm).slice(1);
+                                for (let i = 0; i < multiTranslateIndex.length; i++) {
+                                    if (!$("#show" + multiTranslateIndex[i]).is(':checked')) {
+                                        $("#show" + i).prop('checked', true).change();
+                                    }
                                     $("#transtxt" + multiTranslateIndex[i]).val(multiTranslation[i]);
-                                    if (multiTranslateIndex[i] != translateTarget) templatechosen[multiTranslateIndex[i]] = 1;
+                                    if (multiTranslateIndex[i] != translateTarget) {
+                                        templatechosen[multiTranslateIndex[i]] = 1;
+                                    }
                                 }
-                            } else
+                            } else {
                                 $("#transtxt" + translateTarget).val(defaultTranslate);
+                            }
                         }
                         refresh_trans_div();
                         if (defaultTranslate != null || getUrlParam("out") != null) {
@@ -131,7 +133,7 @@ function fetch_img(task_id) {
                 }
             },
             error: function (xhr, info, e) {
-                console.log(info);
+                console.error(info);
                 alert("服务器错误，请检查您提供的地址是否为正确的推特地址");
                 $('#url').css("display", "");
                 $('#progress').css("display", "none");
@@ -146,21 +148,25 @@ function fetch_img(task_id) {
     }, 1000)
 }
 
-var tweetpos;
-var templatechosen = [];
-var defaultTranslate;
+let tweetpos;
+let articleToIndex = {};
+let templatechosen = [];
+let defaultTranslate;
 
 function show_translate(data) {
-    console.log(data);
     tweetpos = data;
     templatechosen = [];
     $("#translatetbody").html("");
-    for (var i = 0; i < tweetpos.length; i++) {
+    for (let i = 0; i < tweetpos.length; ++i) {
+        if (!articleToIndex.hasOwnProperty(tweetpos[i].articleId)) {
+            articleToIndex[tweetpos[i].articleId] = [];
+        }
+        articleToIndex[tweetpos[i].articleId].push(i);
         templatechosen.push("");
-        var str = tweetpos[i].text || "";
+        let str = tweetpos[i].text || "";
         str = str.replace(/\n/g, "<br>");
         str = str.replace(/  /g, "&nbsp; ");
-        $("#translatetbody").append("<tr>\n" +
+        $("#translatetbody").append("<tr id=\'translatetr" + i + "\'>\n" +
             "      <th scope=\"row\">" +
             "<input type=\'checkbox\' " + (i == 0 ? "checked" : "") + " id=\'show" + i + "\'>" +
             "</th>\n" +
@@ -186,16 +192,30 @@ function show_translate(data) {
 
         });
         $("#show" + i).change(function () {
+            syncArticleVisibility(tweetpos[i].articleId, $(this).is(':checked'));
             refresh_trans_div();
             $("#screenshotclip" + $("tbody input").index(this))[0].scrollIntoView();
 
         });
 
+        if (str.length === 0 && tweetpos[i].textSize === 0) {
+            $('#translatetr' + i).hide();
+        }
     }
     $(".originaltext").click(function () {
         if (document.getSelection().type != "Range" && window.getSelection().type != "Range")
             $("#show" + $(".originaltext").index(this)).click();
     })
+}
+
+function syncArticleVisibility(articleId, isChecked) {
+    let ids = articleToIndex[articleId];
+    for (let i = 0; i < ids.length; ++i) {
+        let $ele = $("#show" + ids[i]);
+        if ($ele.is(':checked') !== isChecked) {
+            $ele.prop('checked', isChecked).change();
+        }
+    }
 }
 
 function toggleLikes(obj) {
@@ -211,53 +231,55 @@ function toggleLikes(obj) {
 }
 
 function clip_screenshot() {
-    $("#screenshotclip" + 0).click(function () {
-        goto($(this)[0].id);
-    });
-
-    for (var i = 0; i < tweetpos.length; i++) {
-        $("#screenshotclip" + i).css("height", tweetpos[i].bottom - (i == 0 ? 0 : tweetpos[i - 1].blockbottom));
-        $("#screenshotclip" + i).after("<div class='screenshotclip' id='" + "screenshotclip" + (i + 1) + "'></div>");
-        $("#screenshotclip" + i).after("<div class='screenshotclip' id='" + "screenshotclip" + (i + 1000) + "'></div>");
-        $("#screenshotclip" + (i + 1)).css("background-image", $("#screenshotclip" + i).css("background-image"));
-        $("#screenshotclip" + (i + 1000)).css("background-image", $("#screenshotclip" + i).css("background-image"));
-        $("#screenshotclip" + (i + 1)).css("width", $("#screenshotclip" + i).css("width"));
-        $("#screenshotclip" + (i + 1000)).css("width", $("#screenshotclip" + i).css("width"));
-        $("#screenshotclip" + (i + 1)).css("height", -tweetpos[i].blockbottom);
-        $("#screenshotclip" + (i + 1000)).css("height", tweetpos[i].blockbottom - tweetpos[i].bottom);
-        $("#screenshotclip" + (i + 1)).css("background-position-y", -tweetpos[i].blockbottom);
-        $("#screenshotclip" + (i + 1000)).css("background-position-y", -tweetpos[i].bottom);
-        $("#screenshotclip" + (i + 1)).css("display", "none");
-        $("#screenshotclip" + (i + 1000)).css("display", "none");
-        $("#screenshotclip" + (i + 1)).click(function () {
+    let $clip0 = $('#screenshotclip0')
+    let width = $clip0.css('width');
+    let bg = $clip0.css('background-image')
+    let $clip;
+    for (let i = 0; i < tweetpos.length; ++i) {
+        $clip = $('#screenshotclip' + i);
+        $clip.css('height', tweetpos[i].bottom - (i === 0 ? 0 : tweetpos[i - 1].bottom));
+        $clip.css('display', 'none');
+        $clip.click(function () {
             goto($(this)[0].id);
         });
+        if (i > 0) {
+            $clip.css('background-image', bg);
+            $clip.css('width', width);
+            $clip.css('background-position-y', -tweetpos[i - 1].bottom);
+        }
+        if (i + 1 < tweetpos.length) {
+            $clip.after('<div class="screenshotclip" id="' + 'screenshotclip' + (i + 1) + '"></div>');
+        }
 
-        if (("https://twitter.com" + tweetpos[i].path) == $('#url').val() || tweetpos[i].textSize === "23") {
-            //$("#screenshotclip" + (i + 1000)).css("height", tweetpos[i].blockbottom - tweetpos[i].bottom-109);
-            //$("#screenshotclip" + (i + 1000)).addClass("nolikes");
-            if (localStorage.getItem("isLikeShown") != null && (!JSON.parse(localStorage.getItem("isLikeShown"))))
-                toggleLikes($("#screenshotclip" + (i + 1000))[0]);
-            else if (getUrlParam("noLikes") != null) toggleLikes($("#screenshotclip" + (i + 1000))[0]);
-            $("#screenshotclip" + (i + 1000)).click(function () {
-                localStorage.setItem("isLikeShown", JSON.stringify(toggleLikes(this)));
+        if (tweetpos[i].textSize === 23) {
+            let ids = articleToIndex[tweetpos[i].articleId];
+            let index = ids[ids.length - 1];
+            let $target = $('#screenshotclip' + index);
+            if (localStorage.getItem('isLikeShown') !== null && (!JSON.parse(localStorage.getItem('isLikeShown')))) {
+                toggleLikes($target[0]);
+            } else if (getUrlParam('noLikes') != null) {
+                toggleLikes($target[0]);
+            }
+            $target.click(function () {
+                localStorage.setItem('isLikeShown', JSON.stringify(toggleLikes(this)));
             });
         }
-        else
-            $("#screenshotclip" + (i + 1000)).click(function () {
+        else {
+            $clip.click(function () {
                 goto($(this)[0].id);
             });
+        }
 
-        $("#screenshotclip" + i).after("<div class='screenshotclip' id='" + "translatediv" + i + "'></div>");
+        $clip.after('<div class="screenshotclip" id="' + 'translatediv' + i + '"></div>');
 
-        $("#translatediv" + i).click(function () {
+        $('#translatediv' + i).click(function () {
             goto($(this)[0].id);
         });
     }
 }
 
-var gotoDoubleClick = "";
-var gotoDoubleClickTimeout = -1;
+let gotoDoubleClick = "";
+let gotoDoubleClickTimeout = -1;
 function goto(id) {
     if (gotoDoubleClick != id) {
         clearTimeout(gotoDoubleClickTimeout);
@@ -269,22 +291,20 @@ function goto(id) {
     }
     id = id.replace(/[^0-9]/g, "");
     id = parseInt(id);
-    if (id >= 1000) id -= 1000;
-    //console.log("goto called "+id);
 }
 
 function refresh_trans_div() {
-    var template = $("#translatetemp").val();
+    let template = $("#translatetemp").val();
     if (template != "") localStorage.setItem("translatetemp", template);
-    var isMultiMode = true;
-    var templates = [];
-    var names = template.match(/<!--.*-->/g);
-    var contents = template.split(/<!--.*-->/g);
+    let isMultiMode = true;
+    let templates = [];
+    let names = template.match(/<!--.*-->/g);
+    let contents = template.split(/<!--.*-->/g);
     try {
-        for (var i = 0; i < names.length; i++) {
+        for (let i = 0; i < names.length; i++) {
             names[i] = names[i].replace("<!--", "").replace("-->", "");
         }
-        for (var i = 0; i < names.length / 2; i++) {
+        for (let i = 0; i < names.length / 2; i++) {
             if (names[i * 2] == names[i * 2 + 1]) {
                 templates.push({
                     name: names[i * 2], content: contents[i * 2 + 1]
@@ -297,38 +317,34 @@ function refresh_trans_div() {
         isMultiMode = false;
         templates = [{name: "", content: template}];
     }
-    //console.log(templates);
+
     if (isMultiMode) $('.translatetd').addClass("multi"); else $('.translatetd').removeClass("multi");
     $('.dropdownmenuitems').html("");
-    for (var i = 0; i < templates.length; i++) {
+    for (let i = 0; i < templates.length; i++) {
         $('.dropdownmenuitems').append('<button class="dropdown-item templatebutton" type="button">' + templates[i].name + '</button>')
     }
     $('.templatebutton').click(function () {
-        var i = $('.dropdownmenuitems').index($(this).parent());
+        let i = $('.dropdownmenuitems').index($(this).parent());
         templatechosen[i] = $(this).text().trim();
         $("#translatediv" + i)[0].scrollIntoView();
         refresh_trans_div();
     });
-    for (var i = 0; i < tweetpos.length; i++) {
+    for (let i = 0; i < tweetpos.length; i++) {
         if ($("#show" + i).is(':checked')) {
             $("#screenshotclip" + i).show();
-            $("#screenshotclip" + (i + 1000)).show();
             $("#translatediv" + i).show();
             $("#translatetd" + i).show();
-
         } else {
             $("#screenshotclip" + i).hide();
-            $("#screenshotclip" + (i + 1000)).hide();
             $("#translatediv" + i).hide();
             $("#translatetd" + i).hide();
         }
         $("#translatediv" + i).html("");
-        if ($("#transtxt" + i).val() != "") {
-            var transtxt = $("#transtxt" + i).val();
+        if ($("#transtxt" + i).val() !== "") {
+            let transtxt = $("#transtxt" + i).val();
 
 
             transtxt = transtxt.replace(/https?:\/\/([^ \n]+)/g, function (word) {
-                console.log(word);
                 return "<span class='link'>" + (
                     word.replace(/https?:\/\//g, "").length > 25 ? (word.replace(/https?:\/\//g, "").substr(0, 25) + "...") : (word.replace(/https?:\/\//g, ""))
                 ) + "</span>"
@@ -336,13 +352,13 @@ function refresh_trans_div() {
                 .replace(/(^@[^ \n]+|\n@[^ \n]+| @[^ \n]+|^#[^ \n]*[^1234567890 \n][^ \n]*|\n#[^ \n]*[^1234567890 \n][^ \n]*| #[^ \n]*[^1234567890 \n][^ \n]*)/g, "<span class='link'>$1</span>")
                 .replace(/\n/g, "<br>")
                 .replace(/  /g, "&nbsp; ");
-            var templateusing = template;
+            let templateusing = template;
             if (isMultiMode) {
                 templateusing = templates[0].content;
 
                 if (typeof templatechosen[i] === 'number') templateusing = templates[templatechosen[i]].content;
                 else
-                    for (var j = 0; j < templates.length; j++)
+                    for (let j = 0; j < templates.length; j++)
                         if (templates[j].name == templatechosen[i]) templateusing = templates[j].content;
             }
             $("#translatediv" + i).html(twemoji.parse(templateusing.replace("{T}", transtxt)));
@@ -356,8 +372,8 @@ function refresh_trans_div() {
 }
 
 function getUrlParam(k) {
-    var regExp = new RegExp('([?]|&)' + k + '=([^&]*)(&|$)');
-    var result = window.location.href.match(regExp);
+    let regExp = new RegExp('([?]|&)' + k + '=([^&]*)(&|$)');
+    let result = window.location.href.match(regExp);
     if (result) {
         return decodeURIComponent(result[2]);
     } else {
@@ -366,7 +382,7 @@ function getUrlParam(k) {
 }
 
 function loadJS(url, callback) {
-    var script = document.createElement('script'),
+    let script = document.createElement('script'),
         fn = callback || function () {
         };
     script.type = 'text/javascript';
@@ -393,7 +409,6 @@ if (getUrlParam('debug'))
 $(function () {
     if (getUrlParam("template") != null && getUrlParam("template").length > 0 && getUrlParam("out") == null) {
         $.get(getUrlParam("template"), function (data, status) {
-            console.log(data);
             if (confirm("将要用链接的内容替代现有的翻译模板，确认覆盖？")) localStorage.setItem("translatetemp", data);
             window.location.href = "/";
         });

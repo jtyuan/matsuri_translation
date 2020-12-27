@@ -46,36 +46,31 @@ class TweetProcess:
         clipinfo = self.driver.execute_script('''
             let ls=[];
             try{
-                let clipText = [...document.querySelectorAll('article>div>div>div>div>div>div>div[dir=auto][lang]'),
-                    ...document.querySelectorAll('article div[data-testid=tweet]>div>div>div>div[dir=auto]')]
+                let clipText = Array.from(document.querySelectorAll('article > div > div > div > div > div div[lang][dir=auto]'))
                     .sort((a, b) => a.getBoundingClientRect().bottom - b.getBoundingClientRect().bottom);
-                let clipArticle=[...document.querySelectorAll('article')];
-                ls = clipArticle.map(article => {
-                    let containingDiv = article.parentElement.parentElement.parentElement;
+                let clipArticle = [...document.querySelectorAll('article')];
+                for (let i = 0; i < clipArticle.length; ++i) {
+                    let containingDiv = clipArticle[i].parentElement.parentElement.parentElement;
                     let rect = containingDiv.getBoundingClientRect();
-                    let text = clipText.reduce((p, c) => (
-                        // Find the last text element that's inside the article. reduce is unnecessary.
-                        // Consider replace it with simple backward for-loop.
-                        c.getBoundingClientRect().top >= rect.top && c.getBoundingClientRect().bottom < rect.bottom ? c : p
-                    ), null);
-                    if (text) {
+                    let texts = clipText.filter(c => (
+                        c.getBoundingClientRect().top >= rect.top && c.getBoundingClientRect().bottom < rect.bottom
+                    ));
+                    texts.forEach(text => {
                         text.querySelectorAll("img").forEach(o => { o.parentNode.innerHTML = o.alt });
-                        return {
-                            blockbottom: rect.bottom,
-                            bottom: text.getBoundingClientRect().bottom,
+                        ls.push({
+                            bottom: Math.min(text.getBoundingClientRect().bottom + 10, rect.bottom),
                             text: [...text.querySelectorAll("span")].reduce((p, c) => p + c.innerText, ''),
-                            textSize: window.getComputedStyle(text).fontSize.replace('px',''),
-                        }
-                    } else {
-                        // Tweet without text (pure media: image, video, etc.)
-                        return {
-                            blockbottom: rect.bottom,
-                            bottom: rect.bottom,
-                            text: '',
-                            textSize: 0,
-                        }
-                    }
-                })
+                            textSize: parseInt(window.getComputedStyle(text).fontSize.replace('px','')),
+                            articleId: i,
+                        })
+                    })
+                    ls.push({
+                        bottom: rect.bottom,
+                        text: '',
+                        textSize: 0,
+                        articleId: i,
+                    });
+                }
             } catch {}
             return JSON.stringify(ls);
         ''')
