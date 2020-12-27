@@ -1,140 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script>
-        var performanceData = {};
-        performanceData.pageHeadTop = new Date().getTime();
-    </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74076320-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+  <script>
+    var performanceData = {}
+    performanceData.pageHeadTop = new Date().getTime()
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-74076320-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || []
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+    function gtag() {
+      dataLayer.push(arguments)
+    }
 
-        gtag('js', new Date());
+    gtag('js', new Date())
 
-        gtag('config', 'UA-74076320-2');
-    </script>
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({
-            'gtm.start':
-                new Date().getTime(), event: 'gtm.js'
-        });
-        var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src =
-            'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-NQ3MX77');</script>
-    <!-- End Google Tag Manager -->
-    <script src="jquery.min.js"></script>
-    <script>window.devicePixelRatio = 1</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=640">
-    <meta name="screen-orientation" content="portrait">
-    <meta name="x5-orientation" content="portrait">
+    gtag('config', 'UA-74076320-2')
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+    w[l] = w[l] || []
+    w[l].push({
+      'gtm.start':
+        new Date().getTime(), event: 'gtm.js'
+    })
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''
+    j.async = true
+    j.src =
+      'https://www.googletagmanager.com/gtm.js?id=' + i + dl
+    f.parentNode.insertBefore(j, f)
+  })(window, document, 'script', 'dataLayer', 'GTM-NQ3MX77')</script>
+  <!-- End Google Tag Manager -->
+  <script src="jquery.min.js"></script>
+  <script>window.devicePixelRatio = 1</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=640">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
 
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>烤推机 - 夏色祭工坊</title>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>烤推机 - 夏色祭工坊</title>
 
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="html2canvas.js"></script>
+  <script src="popper.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <script src="html2canvas.js"></script>
 
-    <script src="Blob.js"></script>
-    <script src="canvas-toBlob.js"></script>
-    <script src="FileSaver.min.js"></script>
-    <link href="bootstrap.min.css" rel="stylesheet">
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
-    <script src="api3.js"></script>
-    <link rel="stylesheet" href="index.css">
-    <script>
-        performanceData.pageHeadBottom = new Date().getTime();
-    </script>
+  <script src="Blob.js"></script>
+  <script src="canvas-toBlob.js"></script>
+  <script src="FileSaver.min.js"></script>
+  <link href="bootstrap.min.css" rel="stylesheet">
+  <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+  <script src="api3.js"></script>
+  <link rel="stylesheet" href="index.css">
+  <script>
+    performanceData.pageHeadBottom = new Date().getTime()
+  </script>
 </head>
 
 <body>
 <!-- Google Tag Manager (noscript) -->
 <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ3MX77"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ3MX77"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
 </noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<div class="screenshotwrapper">
+<div class="screenshot-wrapper">
 
-    <div id="screenshots" style="width: 640px">
-        <div id="screenshotclip0" class="screenshotclip"
-             style="height: 800px;background-image: url('img/twittersample.jpg')"></div>
-    </div>
-<div class="settingsfiller"></div>
+  <div id="screenshots" style="width: 640px">
+    <div id="screenshot-clip0" class="screenshot-clip"
+         style="height: 800px;background-image: url('img/twittersample.jpg')"></div>
+  </div>
+  <div class="settings-filler"></div>
 </div>
-<div class="settingswrapper">
-    <div class="settingshandle">
-            ···
+<div class="settings-wrapper">
+  <div class="settings-handle">
+    ···
+  </div>
+  <div class="settings-wrapper-scroller">
+    <div class="auto-banner container">
+      <h4 class="center">/// 全自动模式运行中，请稍候 ///</h4>
+      <p class="center" id="auto-progress"></p>
     </div>
-    <div class="settingswrapperscroller">
-        <div class="autobanner container">
-                <h4 class="center">/// 全自动模式运行中，请稍候 ///</h4>
-                <p  class="center" id="autoprogress"></p>
-            </div>
-        <div class="container settingscontainer" style="padding-top: 32px;padding-left: 16px">
+    <div class="container settings-container" style="padding-top: 32px;padding-left: 16px">
 
-        <h4 style="margin-bottom: 1.5rem">夏色祭工坊：烤推机DEV</h4>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Twitter URL" id="url"
-                   value="https://twitter.com/nana_kaguraaa"
-                   aria-label="Twitter URL" aria-describedby="button-submit">
-            <input type="text" class="form-control" id="progress"
-                   aria-describedby="button-submit" disabled
-                   style="display: none;border-top-left-radius: .25rem;border-bottom-left-radius: .25rem;">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="button-submit-fast">获取</button>
-            </div>
+      <h4 style="margin-bottom: 1.5rem">神楽七奈字幕组特供版烤推机（<a href="https://github.com/cn-matsuri/matsuri_translation">本家</a>）
+      </h4>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Twitter URL" id="url"
+               value="https://twitter.com/nana_kaguraaa"
+               aria-label="Twitter URL" aria-describedby="button-submit">
+        <input type="text" class="form-control" id="progress"
+               aria-describedby="button-submit" disabled
+               style="display: none;border-top-left-radius: .25rem;border-bottom-left-radius: .25rem;">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" id="button-submit-fast">获取</button>
         </div>
-        <div class="tablewrapper mb-3">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col" style="width: 5%">#</th>
-                    <th scope="col" style="width: 40%">原文</th>
-                    <th scope="col" style="width: 45%">翻译</th>
-                </tr>
-                </thead>
-                <tbody id="translatetbody">
-
-                </tbody>
-            </table>
-        </div>
-        <div class="btn-group mb-3" style="width: 100%;">
-            <button class="btn btn-outline-primary" id="btnDownload" style="flex: 5 1 auto;"
-                    onclick="downloadAsCanvas()">下载图片
-            </button>
-            <button class="btn btn-outline-secondary" id="btnToggleTemplate">翻译模板</button>
-        </div>
-        <div class="input-group mb-3">
-            <textarea class="form-control" id="translatetemp" style="display: none;height: 400px;"
+      </div>
+      <div class="table-wrapper mb-3">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col" style="width: 5%">#</th>
+            <th scope="col" style="width: 40%">原文</th>
+            <th scope="col" style="width: 45%">翻译</th>
+          </tr>
+          </thead>
+          <tbody id="translate-body"></tbody>
+        </table>
+      </div>
+      <div class="btn-group mb-3" style="width: 100%;">
+        <button class="btn btn-outline-primary" id="btnDownload" style="flex: 5 1 auto;"
+                onclick="tweetToaster.downloadAsCanvas()">下载图片
+        </button>
+        <button class="btn btn-outline-secondary" id="btnToggleTemplate">翻译模板</button>
+      </div>
+      <div class="input-group mb-3">
+            <textarea class="form-control" id="translate-temp" style="display: none;height: 400px;"
                       aria-label="With textarea"></textarea>
-        </div>
+      </div>
 
-            <!--😆😁😍😁🐷😝😄❤🚿-->
+      <!--😆😁😍😁🐷😝😄❤🚿-->
 
     </div>
-    </div>
+  </div>
 
 </div>
 
 <script>
-    performanceData.pageBodyBottom = new Date().getTime();
+  performanceData.pageBodyBottom = new Date().getTime()
 </script>
 <script>
-  (function(d) {
+  (function (d) {
     var config = {
       kitId: 'wvx4pma',
       scriptTimeout: 3000,
