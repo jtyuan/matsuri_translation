@@ -58,6 +58,7 @@
   <script>
     performanceData.pageHeadBottom = new Date().getTime()
   </script>
+  <style id="head-temp-style"></style>
 </head>
 
 <body>
@@ -116,11 +117,13 @@
         <button class="btn btn-outline-primary" id="btnDownload" style="flex: 5 1 auto;"
                 onclick="tweetToaster.downloadAsCanvas()">下载图片
         </button>
-        <button class="btn btn-outline-secondary" id="btnToggleTemplate">翻译模板</button>
+        <button class="btn btn-outline-secondary" id="btn-toggle-template">翻译模板</button>
       </div>
-      <div class="input-group mb-3">
-            <textarea class="form-control" id="translate-temp" style="display: none;height: 400px;"
-                      aria-label="With textarea"></textarea>
+      <div class="input-group mb-3" id="translate-temp" style="display: none;">
+        <textarea class="form-control" id="translate-temp-text" style="height: 400px;"
+                  aria-label="With textarea" placeholder="在这里写翻译的模板"></textarea>
+        <textarea class="form-control" id="translate-temp-style" style="height: 400px;"
+                  aria-label="With textarea" placeholder="在这里写给模板用的css(注意：会全局生效)"></textarea>
       </div>
 
       <!--😆😁😍😁🐷😝😄❤🚿-->
@@ -136,12 +139,28 @@
 <script>
   (function (d) {
     var config = {
-      kitId: 'wvx4pma',
-      scriptTimeout: 3000,
-      async: true
-    },
-    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
-  })(document);
+        kitId: 'wvx4pma',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h = d.documentElement, t = setTimeout(function () {
+        h.className = h.className.replace(/\bwf-loading\b/g, '') + ' wf-inactive'
+      }, config.scriptTimeout), tk = d.createElement('script'), f = false, s = d.getElementsByTagName('script')[0], a
+    h.className += ' wf-loading'
+    tk.src = 'https://use.typekit.net/' + config.kitId + '.js'
+    tk.async = true
+    tk.onload = tk.onreadystatechange = function () {
+      a = this.readyState
+      if (f || a && a != 'complete' && a != 'loaded') return
+      f = true
+      clearTimeout(t)
+      try {
+        Typekit.load(config)
+      } catch (e) {
+      }
+    }
+    s.parentNode.insertBefore(tk, s)
+  })(document)
 </script>
 </body>
 </html>

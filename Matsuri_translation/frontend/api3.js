@@ -316,12 +316,21 @@ tweetToaster = function () {
   }
 
   function refresh_trans_div() {
-    let template = $('#translate-temp').val()
-    if (template !== '') localStorage.setItem('translate-temp', template)
+    let template = $('#translate-temp-text').val()
+    let templateStyle = $('#translate-temp-style').val()
     let isMultiMode = true
     let templates = []
     let names = template.match(/<!--.*-->/g)
     let contents = template.split(/<!--.*-->/g)
+
+    if (template && template.length > 0) {
+      localStorage.setItem('template', template)
+    }
+
+    if (templateStyle && templateStyle.length > 0) {
+      $('#head-temp-style').html(templateStyle)
+      localStorage.setItem('templateStyle', templateStyle)
+    }
 
     if (names) {
       for (let i = 0; i < names.length; i++) {
@@ -434,13 +443,13 @@ tweetToaster = function () {
     })
   $(function () {
     if (getUrlParam('template') != null && getUrlParam('template').length > 0 && getUrlParam('out') == null) {
-      $.get(getUrlParam('template'), function (data, status) {
-        if (confirm('将要用链接的内容替代现有的翻译模板，确认覆盖？')) localStorage.setItem('translate-temp', data)
+      $.get(getUrlParam('template'), function (data) {
+        if (confirm('将要用链接的内容替代现有的翻译模板，确认覆盖？')) localStorage.setItem('template', data)
         window.location.href = '/'
       })
     }
     let $translateTemp = $('#translate-temp')
-    $('#btnToggleTemplate').on('click', function () {
+    $('#btn-toggle-template').on('click', function () {
       if ($translateTemp.css('display') === 'none') {
         $translateTemp.show()
       } else {
@@ -455,12 +464,25 @@ tweetToaster = function () {
       saveUrlUser = true
       submit_task(true)
     })
-    if (localStorage.getItem('translate-temp') == null) localStorage.setItem('translate-temp', '<div style="margin:10px 38px">\n' +
-      '<img src="img/nana_text.png" height="34">\n' +
-      '<div style="font-size:20px;font-family: source-han-sans-simplified-c, sans-serif;font-weight: 400;font-style: normal;">{T}</div>\n' +
-      '</div>')
-    $translateTemp.val(localStorage.getItem('translate-temp'))
-    $translateTemp.on('keyup', refresh_trans_div)
+    if (!localStorage.getItem('template')) {
+      localStorage.setItem('template', `<div style="margin:10px 15px">
+  <img src="img/nana_text.png" height="38">
+  <div style="font-size:24px;">{T}</div>
+</div>`)
+    }
+    if (!localStorage.getItem('templateStyle')) {
+      localStorage.setItem('templateStyle', `.link {
+  color: #91D2FA;
+}`)
+    }
+    let template = localStorage.getItem('template')
+    let templateStyle = localStorage.getItem('templateStyle')
+    let $templateText = $('#translate-temp-text')
+    let $templateStyle = $('#translate-temp-style')
+    $templateText.val(template)
+    $templateStyle.val(templateStyle)
+    $templateText.on('keyup', refresh_trans_div)
+    $templateStyle.on('keyup', refresh_trans_div)
     $('.screenshot-wrapper').on('touchstart', function () {
       $('body').addClass('overview')
     })
@@ -483,8 +505,8 @@ tweetToaster = function () {
       $.ajaxSetup({ async: false })
       if (getUrlParam('template') != null && getUrlParam('template').length > 0) {
         $.get(getUrlParam('template'), function (data) {
-          localStorage.setItem('translate-temp', data)
-          $translateTemp.val(localStorage.getItem('translate-temp'))
+          localStorage.setItem('template', data)
+          $templateText.val(localStorage.getItem('template'))
         })
       }
       $.ajaxSetup({ async: true })
